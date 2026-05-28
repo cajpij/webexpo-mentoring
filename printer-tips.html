@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fa6831" />
+    <title>3D Printer Tips · Mentoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --orange: #fa6831;
+        --ink: #1a1a1a;
+        --muted: #5b6166;
+        --card: #ffffff;
+        --card-hover: #fff7ef;
+        --shadow: 0 8px 24px rgba(60, 20, 0, 0.18),
+          0 2px 6px rgba(60, 20, 0, 0.08);
+        --safe-top: env(safe-area-inset-top);
+        --safe-bottom: env(safe-area-inset-bottom);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--orange);
+        color: var(--ink);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        position: relative;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px;
+      }
+
+      .back {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: calc(20px + var(--safe-top)) 0 4px;
+        padding: 8px 16px 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+        transition: background 0.15s ease;
+      }
+
+      .back:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: center;
+        padding-top: 24px;
+      }
+
+      .logo {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: #0a0a0a;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 12px 32px rgba(60, 20, 0, 0.35);
+      }
+
+      .logo svg {
+        width: 46px;
+        height: 46px;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 24px 8px 8px;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(60, 20, 0, 0.25);
+      }
+
+      .hero h1 {
+        margin: 0 0 6px;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .hero p {
+        margin: 0;
+        font-size: 16px;
+        opacity: 0.95;
+      }
+
+      .cards {
+        padding: 28px 0 calc(40px + var(--safe-bottom));
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .card {
+        display: grid;
+        grid-template-columns: 64px 1fr 24px;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px 10px 10px;
+        background: var(--card);
+        border-radius: 999px;
+        color: var(--ink);
+        text-decoration: none;
+        box-shadow: var(--shadow);
+        transition: background 0.15s ease, transform 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .card:hover {
+        background: var(--card-hover);
+      }
+
+      .card:active {
+        transform: scale(0.985);
+      }
+
+      .icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--orange);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .icon svg {
+        width: 32px;
+        height: 32px;
+        display: block;
+      }
+
+      .label {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .label .title {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.25;
+        color: var(--ink);
+      }
+
+      .label .sub {
+        margin-top: 2px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+
+      .chev {
+        color: #c8ccd2;
+      }
+
+      .foot {
+        margin-top: auto;
+        text-align: center;
+        padding: 8px 24px calc(20px + var(--safe-bottom));
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-shadow: 0 1px 6px rgba(60, 20, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      class="bg"
+      viewBox="0 0 800 800"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="hex" viewBox="0 0 100 87">
+          <polygon points="25,0 75,0 100,43.5 75,87 25,87 0,43.5" />
+        </symbol>
+      </defs>
+      <g fill="#d94c1c">
+        <use href="#hex" x="-160" y="-120" width="460" height="400" />
+        <use href="#hex" x="520" y="-80" width="420" height="365" />
+        <use href="#hex" x="-100" y="380" width="380" height="331" />
+        <use href="#hex" x="500" y="440" width="440" height="383" />
+        <use href="#hex" x="240" y="180" width="320" height="278" opacity="0.85" />
+      </g>
+      <g fill="#b03e10" opacity="0.55">
+        <use href="#hex" x="-220" y="200" width="300" height="261" />
+        <use href="#hex" x="640" y="220" width="280" height="243" />
+        <use href="#hex" x="100" y="600" width="260" height="226" />
+      </g>
+      <g fill="#ff8a55" opacity="0.65">
+        <use href="#hex" x="120" y="60" width="240" height="209" />
+        <use href="#hex" x="420" y="120" width="200" height="174" />
+        <use href="#hex" x="60" y="320" width="220" height="191" />
+        <use href="#hex" x="540" y="320" width="180" height="157" />
+        <use href="#hex" x="280" y="500" width="200" height="174" />
+      </g>
+      <g fill="#ffffff" opacity="0.06">
+        <use href="#hex" x="320" y="280" width="180" height="157" />
+        <use href="#hex" x="180" y="180" width="120" height="105" />
+        <use href="#hex" x="600" y="500" width="160" height="139" />
+      </g>
+    </svg>
+
+    <main class="page">
+      <a class="back" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M13 4l-6 6 6 6"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Back
+      </a>
+
+      <header class="topbar">
+        <div class="logo" aria-label="3D printer">
+          <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <path
+              d="M7 3h10v5H7V3Zm-3 7h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2v3H8v-3H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1Zm6 6h4v3h-4v-3Z"
+            />
+          </svg>
+        </div>
+      </header>
+
+      <section class="hero">
+        <h1>3D Printer Tips</h1>
+        <p>Guides &amp; Prusa support</p>
+      </section>
+
+      <nav class="cards" aria-label="3D printer resources">
+        <a
+          class="card"
+          href="https://assets.prusa3d.com/media/file/efc0d330-37ba-40ae-b2e1-a416cfa5447f.pdf"
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z" />
+              <path d="M13 3v4h4" />
+              <path d="M9 13h6M9 16.5h6" />
+            </svg>
+          </span>
+          <span class="label">
+            <span class="title">Tips &amp; Tricks</span>
+            <span class="sub">Open the PDF guide</span>
+          </span>
+          <span class="chev" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M7 4l6 6-6 6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </a>
+
+        <a
+          class="card"
+          href="https://help.prusa3d.com/?feature-flag-chat=on"
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L4 21l1.3-4.4A8.4 8.4 0 0 1 4 11.5 8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"
+                fill="#fff"
+              />
+              <path
+                d="M12.4 7.4c.28 2 1.1 2.82 3.1 3.1-2 .28-2.82 1.1-3.1 3.1-.28-2-1.1-2.82-3.1-3.1 2-.28 2.82-1.1 3.1-3.1Z"
+                fill="#fa6831"
+              />
+            </svg>
+          </span>
+          <span class="label">
+            <span class="title">Prusa AI Assistant</span>
+            <span class="sub">Ask the help chatbot</span>
+          </span>
+          <span class="chev" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M7 4l6 6-6 6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </a>
+      </nav>
+
+      <p class="foot">WebExpo 2026 · Mentoring</p>
+    </main>
+  </body>
+</html>
