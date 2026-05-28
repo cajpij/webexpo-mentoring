@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fa6831" />
+    <title>UX Research Academy · Mentoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --orange: #fa6831;
+        --violet: #9068ff;
+        --violet-dark: #7a4ff0;
+        --safe-top: env(safe-area-inset-top);
+        --safe-bottom: env(safe-area-inset-bottom);
+        --shadow: 0 8px 24px rgba(60, 20, 0, 0.18),
+          0 2px 6px rgba(60, 20, 0, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--orange);
+        color: #1a1a1a;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        position: relative;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px;
+      }
+
+      .back {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: calc(20px + var(--safe-top)) 0 16px;
+        padding: 8px 16px 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+        transition: background 0.15s ease;
+      }
+
+      .back:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      /* The flyer "document" + CTA share one white card */
+      .doc {
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .doc .flyer {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .cta {
+        padding: 4px 22px 26px;
+        text-align: center;
+      }
+
+      .get-access {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 18px 24px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--violet), var(--violet-dark));
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        box-shadow: 0 8px 20px rgba(124, 79, 240, 0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .get-access:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px rgba(124, 79, 240, 0.42);
+      }
+
+      .get-access:active {
+        transform: translateY(0) scale(0.99);
+        box-shadow: 0 4px 12px rgba(124, 79, 240, 0.3);
+      }
+
+      .get-access svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .cta .hint {
+        margin: 12px 0 0;
+        font-size: 13px;
+        color: #8a9099;
+        font-weight: 500;
+      }
+
+      .foot {
+        margin-top: auto;
+        text-align: center;
+        padding: 20px 24px calc(20px + var(--safe-bottom));
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-shadow: 0 1px 6px rgba(60, 20, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      class="bg"
+      viewBox="0 0 800 800"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="hex" viewBox="0 0 100 87">
+          <polygon points="25,0 75,0 100,43.5 75,87 25,87 0,43.5" />
+        </symbol>
+      </defs>
+      <g fill="#d94c1c">
+        <use href="#hex" x="-160" y="-120" width="460" height="400" />
+        <use href="#hex" x="520" y="-80" width="420" height="365" />
+        <use href="#hex" x="-100" y="380" width="380" height="331" />
+        <use href="#hex" x="500" y="440" width="440" height="383" />
+        <use href="#hex" x="240" y="180" width="320" height="278" opacity="0.85" />
+      </g>
+      <g fill="#b03e10" opacity="0.55">
+        <use href="#hex" x="-220" y="200" width="300" height="261" />
+        <use href="#hex" x="640" y="220" width="280" height="243" />
+        <use href="#hex" x="100" y="600" width="260" height="226" />
+      </g>
+      <g fill="#ff8a55" opacity="0.65">
+        <use href="#hex" x="120" y="60" width="240" height="209" />
+        <use href="#hex" x="420" y="120" width="200" height="174" />
+        <use href="#hex" x="60" y="320" width="220" height="191" />
+        <use href="#hex" x="540" y="320" width="180" height="157" />
+        <use href="#hex" x="280" y="500" width="200" height="174" />
+      </g>
+      <g fill="#ffffff" opacity="0.06">
+        <use href="#hex" x="320" y="280" width="180" height="157" />
+        <use href="#hex" x="180" y="180" width="120" height="105" />
+        <use href="#hex" x="600" y="500" width="160" height="139" />
+      </g>
+    </svg>
+
+    <main class="page">
+      <a class="back" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M13 4l-6 6 6 6"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Back
+      </a>
+
+      <div class="doc">
+        <img class="flyer" src="uxr-flyer.png" alt="UX Research Academy — practical step-by-step guide to UX research, built in Notion" />
+        <div class="cta">
+          <a
+            class="get-access"
+            href="https://lmc4.typeform.com/uxr-academy"
+            target="_blank"
+            rel="noopener"
+          >
+            Get access
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="M7 4l6 6-6 6"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+          <p class="hint">Opens the application form</p>
+        </div>
+      </div>
+
+      <p class="foot">WebExpo 2026 · Mentoring</p>
+    </main>
+  </body>
+</html>
