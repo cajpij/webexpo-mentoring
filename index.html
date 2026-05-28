@@ -245,12 +245,32 @@
         align-items: center;
         gap: 14px;
       }
+      .timer-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
       .timer-label {
-        align-self: flex-start;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
+        color: #b1b6bd;
+      }
+      .clock {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #3a3f45;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
+      }
+      .clock svg {
+        width: 15px;
+        height: 15px;
         color: #b1b6bd;
       }
       .timer-ring {
@@ -459,7 +479,16 @@
       </section>
 
       <section class="timer" aria-label="Session timer">
-        <span class="timer-label">Session timer</span>
+        <div class="timer-top">
+          <span class="timer-label">Session timer</span>
+          <span class="clock" title="Current time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7.5V12l3 1.8" />
+            </svg>
+            <time id="clock">--:--</time>
+          </span>
+        </div>
         <div class="timer-ring">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle class="track" cx="60" cy="60" r="52" />
@@ -722,6 +751,18 @@
           setMinutes(+e.target.dataset.min);
         });
         paint();
+      })();
+
+      (function () {
+        var el = document.getElementById("clock");
+        function upd() {
+          var d = new Date();
+          var h = d.getHours(),
+            m = d.getMinutes();
+          el.textContent = (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+        }
+        upd();
+        setInterval(upd, 1000);
       })();
     </script>
   </body>
