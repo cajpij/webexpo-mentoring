@@ -233,6 +233,125 @@
         text-shadow: 0 1px 6px rgba(60, 20, 0, 0.2);
       }
 
+      /* ---------- Session timer ---------- */
+      .timer {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 16px 18px 20px;
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .timer-label {
+        align-self: flex-start;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #b1b6bd;
+      }
+      .timer-ring {
+        position: relative;
+        width: 150px;
+        height: 150px;
+      }
+      .timer-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .timer-ring .track {
+        fill: none;
+        stroke: #f0ebe4;
+        stroke-width: 9;
+      }
+      .timer-ring .prog {
+        fill: none;
+        stroke: var(--orange);
+        stroke-width: 9;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.4s linear, stroke 0.3s ease;
+      }
+      .timer-time {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 38px;
+        font-weight: 800;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+      .timer.ending .prog,
+      .timer.finished .prog {
+        stroke: #e23b2e;
+      }
+      .timer.ending .timer-time,
+      .timer.finished .timer-time {
+        color: #e23b2e;
+      }
+      .timer.finished {
+        animation: timerflash 0.8s ease 3;
+      }
+      @keyframes timerflash {
+        50% {
+          box-shadow: 0 0 0 4px rgba(226, 59, 46, 0.35), var(--shadow);
+        }
+      }
+      .presets {
+        display: flex;
+        gap: 8px;
+      }
+      .presets button {
+        border: 1px solid #e6e1da;
+        background: #fff;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .presets button.active {
+        background: #fff3ec;
+        border-color: var(--orange);
+        color: var(--orange);
+      }
+      .timer-btns {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+      .timer-btns button {
+        flex: 1;
+        font: inherit;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 13px;
+        border-radius: 999px;
+        cursor: pointer;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 0.12s ease, filter 0.15s ease;
+      }
+      .timer-btns button:active {
+        transform: scale(0.98);
+      }
+      .t-primary {
+        background: var(--orange);
+        color: #fff;
+      }
+      .t-secondary {
+        background: #f1ece6;
+        color: var(--ink);
+      }
+
       /* ---------- QR panel ---------- */
       .qr-panel {
         display: flex;
@@ -337,6 +456,26 @@
       <section class="hero">
         <h1>Mentoring</h1>
         <p>Resources from today's session</p>
+      </section>
+
+      <section class="timer" aria-label="Session timer">
+        <span class="timer-label">Session timer</span>
+        <div class="timer-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="52" />
+            <circle class="prog" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="timer-time" id="time" role="timer">20:00</div>
+        </div>
+        <div class="presets" id="presets">
+          <button type="button" data-min="15">15</button>
+          <button type="button" data-min="20" class="active">20</button>
+          <button type="button" data-min="30">30</button>
+        </div>
+        <div class="timer-btns">
+          <button type="button" class="t-primary" id="startPause">Start</button>
+          <button type="button" class="t-secondary" id="resetTimer">Reset</button>
+        </div>
       </section>
 
       <nav class="cards" aria-label="Mentoring resources">
@@ -486,5 +625,104 @@
 
       <p class="foot">WebExpo 2026 · Mentoring</p>
     </main>
+
+    <script>
+      (function () {
+        var total = 20 * 60,
+          remaining = total,
+          running = false,
+          ticker = null,
+          actx = null;
+        var prog = document.querySelector(".timer .prog");
+        var timeEl = document.getElementById("time");
+        var card = document.querySelector(".timer");
+        var startPause = document.getElementById("startPause");
+        var C = 2 * Math.PI * 52;
+        prog.style.strokeDasharray = C;
+
+        function fmt(s) {
+          var m = Math.floor(s / 60),
+            x = s % 60;
+          return m + ":" + (x < 10 ? "0" : "") + x;
+        }
+        function paint() {
+          timeEl.textContent = fmt(remaining);
+          prog.style.strokeDashoffset = C * (1 - (total ? remaining / total : 0));
+          card.classList.toggle("ending", remaining <= 60 && remaining > 0);
+        }
+        function tick() {
+          remaining--;
+          if (remaining <= 0) {
+            remaining = 0;
+            paint();
+            pause();
+            card.classList.add("finished");
+            beep();
+            return;
+          }
+          paint();
+        }
+        function start() {
+          if (running || remaining <= 0) return;
+          if (!actx) {
+            try {
+              actx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {}
+          }
+          if (actx && actx.state === "suspended") actx.resume();
+          running = true;
+          startPause.textContent = "Pause";
+          ticker = setInterval(tick, 1000);
+        }
+        function pause() {
+          running = false;
+          startPause.textContent = "Start";
+          clearInterval(ticker);
+        }
+        function reset() {
+          pause();
+          remaining = total;
+          card.classList.remove("finished", "ending");
+          paint();
+        }
+        function setMinutes(m) {
+          pause();
+          total = m * 60;
+          remaining = total;
+          card.classList.remove("finished", "ending");
+          paint();
+        }
+        function beep() {
+          if (!actx) return;
+          [0, 0.35, 0.7].forEach(function (t) {
+            var o = actx.createOscillator(),
+              g = actx.createGain();
+            o.type = "sine";
+            o.frequency.value = 880;
+            o.connect(g);
+            g.connect(actx.destination);
+            var s = actx.currentTime + t;
+            g.gain.setValueAtTime(0.0001, s);
+            g.gain.exponentialRampToValueAtTime(0.3, s + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, s + 0.25);
+            o.start(s);
+            o.stop(s + 0.27);
+          });
+        }
+        startPause.addEventListener("click", function () {
+          running ? pause() : start();
+        });
+        document.getElementById("resetTimer").addEventListener("click", reset);
+        document.getElementById("presets").addEventListener("click", function (e) {
+          if (e.target.tagName !== "BUTTON") return;
+          [].forEach.call(this.children, function (b) {
+            b.classList.remove("active");
+          });
+          e.target.classList.add("active");
+          setMinutes(+e.target.dataset.min);
+        });
+        paint();
+      })();
+    </script>
   </body>
 </html>
