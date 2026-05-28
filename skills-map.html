@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fa6831" />
+    <title>Skills Map · Mentoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --orange: #fa6831;
+        --now: #fa6831;
+        --goal: #4f46e5;
+        --ink: #1a1a1a;
+        --muted: #5b6166;
+        --safe-top: env(safe-area-inset-top);
+        --safe-bottom: env(safe-area-inset-bottom);
+        --shadow: 0 8px 24px rgba(60, 20, 0, 0.18),
+          0 2px 6px rgba(60, 20, 0, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--orange);
+        color: var(--ink);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        position: relative;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 560px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px;
+      }
+
+      .back {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: calc(20px + var(--safe-top)) 0 4px;
+        padding: 8px 16px 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+        transition: background 0.15s ease;
+      }
+      .back:hover { background: rgba(255, 255, 255, 0.28); }
+
+      .hero {
+        text-align: center;
+        padding: 18px 8px 6px;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(60, 20, 0, 0.25);
+      }
+      .hero h1 {
+        margin: 0 0 6px;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .hero p { margin: 0; font-size: 15px; opacity: 0.95; }
+
+      .card {
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 18px 16px;
+        margin-top: 14px;
+      }
+
+      /* ---- Radar ---- */
+      #radar { width: 100%; height: auto; display: block; }
+      .ring { fill: none; stroke: #ece9f1; stroke-width: 1; }
+      .axis { stroke: #e2dded; stroke-width: 1; }
+      .axis-label { font-size: 10.5px; font-weight: 600; fill: #4a4f55; }
+      .goal-poly {
+        fill: rgba(79, 70, 229, 0.08);
+        stroke: var(--goal);
+        stroke-width: 2.4;
+        stroke-dasharray: 5 4;
+        stroke-linejoin: round;
+      }
+      .cur-poly {
+        fill: rgba(250, 104, 49, 0.32);
+        stroke: var(--now);
+        stroke-width: 2.4;
+        stroke-linejoin: round;
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 22px;
+        margin-top: 6px;
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .chip { width: 16px; height: 12px; border-radius: 3px; }
+      .chip.now { background: var(--now); }
+      .chip.goal {
+        background: rgba(79, 70, 229, 0.12);
+        border: 2px dashed var(--goal);
+      }
+
+      .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .card-head h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .reset {
+        border: 1px solid #e3e3e8;
+        background: #fff;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .reset:hover { background: #f5f5f7; }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 560px) {
+        .controls { grid-template-columns: 1fr 1fr; gap: 14px 22px; }
+      }
+      .skill .skill-name {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .srow {
+        display: grid;
+        grid-template-columns: 42px 1fr 20px;
+        align-items: center;
+        gap: 8px;
+        margin: 3px 0;
+      }
+      .tag {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .tag.now { color: var(--now); }
+      .tag.goal { color: var(--goal); }
+      .srow input[type="range"] { width: 100%; margin: 0; }
+      .srow input[data-type="cur"] { accent-color: var(--now); }
+      .srow input[data-type="goal"] { accent-color: var(--goal); }
+      .num {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: right;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+      .scale-note {
+        margin: 10px 2px 0;
+        font-size: 12px;
+        color: #9095a0;
+      }
+
+      /* ---- Question script ---- */
+      .callout {
+        background: #fff7ef;
+        border: 1px solid #ffd9c2;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-size: 13.5px;
+        line-height: 1.45;
+        color: #6a4326;
+        margin-bottom: 6px;
+      }
+      .callout b { color: var(--orange); }
+
+      details {
+        border-top: 1px solid #eee;
+        padding: 2px 0;
+      }
+      details:first-of-type { border-top: none; }
+      summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 12px 2px;
+        font-size: 15px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary .tw {
+        color: #b1b6bd;
+        transition: transform 0.2s ease;
+      }
+      details[open] summary .tw { transform: rotate(90deg); }
+      details ul {
+        margin: 0 0 12px;
+        padding-left: 20px;
+        color: #33373c;
+      }
+      details li {
+        margin: 7px 0;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .foot {
+        margin-top: auto;
+        text-align: center;
+        padding: 20px 24px calc(20px + var(--safe-bottom));
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-shadow: 0 1px 6px rgba(60, 20, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      class="bg"
+      viewBox="0 0 800 800"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="hex" viewBox="0 0 100 87">
+          <polygon points="25,0 75,0 100,43.5 75,87 25,87 0,43.5" />
+        </symbol>
+      </defs>
+      <g fill="#d94c1c">
+        <use href="#hex" x="-160" y="-120" width="460" height="400" />
+        <use href="#hex" x="520" y="-80" width="420" height="365" />
+        <use href="#hex" x="-100" y="380" width="380" height="331" />
+        <use href="#hex" x="500" y="440" width="440" height="383" />
+      </g>
+      <g fill="#ff8a55" opacity="0.6">
+        <use href="#hex" x="120" y="60" width="240" height="209" />
+        <use href="#hex" x="420" y="120" width="200" height="174" />
+        <use href="#hex" x="60" y="320" width="220" height="191" />
+        <use href="#hex" x="540" y="320" width="180" height="157" />
+      </g>
+    </svg>
+
+    <main class="page">
+      <a class="back" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Back
+      </a>
+
+      <section class="hero">
+        <h1>Skills Map</h1>
+        <p>Rate each skill now vs. your goal</p>
+      </section>
+
+      <section class="card">
+        <svg id="radar" viewBox="0 0 460 410" role="img" aria-label="Skills radar chart"></svg>
+        <div class="legend">
+          <span><i class="chip now"></i>Now</span>
+          <span><i class="chip goal"></i>Goal</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Adjust scores</h2>
+          <button class="reset" id="reset" type="button">Reset</button>
+        </div>
+        <div class="controls" id="controls"></div>
+        <p class="scale-note">Scale 0–5 · 1 Novice → 3 Competent → 5 Expert</p>
+      </section>
+
+      <section class="card">
+        <div class="callout">
+          <b>Session flow:</b> first third — understand where they are · middle
+          third — find the single highest-leverage gap · final third — agree on
+          one concrete next step for this week.
+        </div>
+
+        <details open>
+          <summary>Opening / Context <span class="tw">›</span></summary>
+          <ul>
+            <li>What do you currently work on, and what's your role?</li>
+            <li>How long have you been in this field?</li>
+            <li>What brought you to this mentoring session today?</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Current Skill Level <span class="tw">›</span></summary>
+          <ul>
+            <li>On a scale of 1–10, how confident do you feel in your core skills? Why that number?</li>
+            <li>What part of your work feels easy and natural to you now?</li>
+            <li>What part still makes you slow down or feel uncertain?</li>
+            <li>Can you walk me through a recent project you're proud of?</li>
+            <li>What's a problem you got stuck on recently, and how did you handle it?</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Work &amp; Habits <span class="tw">›</span></summary>
+          <ul>
+            <li>What does a typical work week look like for you?</li>
+            <li>How do you currently learn new things — courses, docs, building, mentors?</li>
+            <li>What tools or technologies do you use daily?</li>
+            <li>Do you work alone or in a team, and how does that affect your growth?</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Goals &amp; Improvement <span class="tw">›</span></summary>
+          <ul>
+            <li>Where do you want to be in 6 months? In 2 years?</li>
+            <li>What specific skill, if you improved it, would change the most for you?</li>
+            <li>What's been holding you back from improving that so far?</li>
+            <li>How much time per week can you realistically invest in growth?</li>
+            <li>How will you know you've improved — what does success look like?</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Closing <span class="tw">›</span></summary>
+          <ul>
+            <li>What's one thing you'd like to walk away from this session with?</li>
+            <li>Who or what supports your growth right now? Where are the gaps?</li>
+          </ul>
+        </details>
+      </section>
+
+      <p class="foot">WebExpo 2026 · Mentoring</p>
+    </main>
+
+    <script>
+      (function () {
+        var skills = [
+          "Product Design", "HCD", "User Research", "Synthesis", "Ideation",
+          "Usability Testing", "Prototyping", "Design Systems", "3D Printing"
+        ];
+        var N = skills.length, MAX = 5;
+        var defCur = [3, 2, 2, 3, 3, 2, 3, 2, 1];
+        var defGoal = [5, 4, 4, 4, 5, 4, 4, 3, 3];
+        var current = defCur.slice(), goal = defGoal.slice();
+
+        var cx = 230, cy = 195, R = 120, PAD = 18;
+        var NS = "http://www.w3.org/2000/svg";
+        var svg = document.getElementById("radar");
+        var curPoly, goalPoly;
+
+        function ptAt(i, val) {
+          var ang = -Math.PI / 2 + i * 2 * Math.PI / N;
+          var r = R * (val / MAX);
+          return [cx + r * Math.cos(ang), cy + r * Math.sin(ang)];
+        }
+        function pointsStr(vals) {
+          return vals.map(function (v, i) { return ptAt(i, v).join(","); }).join(" ");
+        }
+        function mk(tag, attrs) {
+          var el = document.createElementNS(NS, tag);
+          for (var k in attrs) el.setAttribute(k, attrs[k]);
+          return el;
+        }
+
+        function buildGrid() {
+          for (var lvl = 1; lvl <= MAX; lvl++) {
+            var pts = [];
+            for (var i = 0; i < N; i++) pts.push(ptAt(i, lvl).join(","));
+            svg.appendChild(mk("polygon", { points: pts.join(" "), "class": "ring" }));
+          }
+          for (var i = 0; i < N; i++) {
+            var end = ptAt(i, MAX);
+            svg.appendChild(mk("line", { x1: cx, y1: cy, x2: end[0], y2: end[1], "class": "axis" }));
+            var ang = -Math.PI / 2 + i * 2 * Math.PI / N;
+            var lx = cx + (R + PAD) * Math.cos(ang);
+            var ly = cy + (R + PAD) * Math.sin(ang);
+            var c = Math.cos(ang), s = Math.sin(ang);
+            var anchor = c > 0.3 ? "start" : (c < -0.3 ? "end" : "middle");
+            var t = mk("text", { x: lx, y: ly, "class": "axis-label", "text-anchor": anchor });
+            var words = skills[i].split(" ");
+            var lines = words.length > 1
+              ? [words.slice(0, Math.ceil(words.length / 2)).join(" "), words.slice(Math.ceil(words.length / 2)).join(" ")]
+              : [skills[i]];
+            var baseDy = s < -0.3 ? -(lines.length - 1) * 1.1 : (s > 0.3 ? 0.3 : -0.3);
+            lines.forEach(function (ln, k) {
+              var ts = mk("tspan", { x: lx, dy: (k === 0 ? baseDy : 1.1) + "em" });
+              ts.textContent = ln;
+              t.appendChild(ts);
+            });
+            svg.appendChild(t);
+          }
+          goalPoly = mk("polygon", { "class": "goal-poly" });
+          curPoly = mk("polygon", { "class": "cur-poly" });
+          svg.appendChild(goalPoly);
+          svg.appendChild(curPoly);
+        }
+
+        function render() {
+          curPoly.setAttribute("points", pointsStr(current));
+          goalPoly.setAttribute("points", pointsStr(goal));
+        }
+
+        function buildControls() {
+          var wrap = document.getElementById("controls");
+          skills.forEach(function (s, i) {
+            var row = document.createElement("div");
+            row.className = "skill";
+            row.innerHTML =
+              '<div class="skill-name">' + s + '</div>' +
+              '<label class="srow"><span class="tag now">NOW</span>' +
+              '<input type="range" min="0" max="' + MAX + '" step="1" value="' + current[i] + '" data-type="cur" data-i="' + i + '">' +
+              '<span class="num" id="cur-' + i + '">' + current[i] + '</span></label>' +
+              '<label class="srow"><span class="tag goal">GOAL</span>' +
+              '<input type="range" min="0" max="' + MAX + '" step="1" value="' + goal[i] + '" data-type="goal" data-i="' + i + '">' +
+              '<span class="num" id="goal-' + i + '">' + goal[i] + '</span></label>';
+            wrap.appendChild(row);
+          });
+          wrap.addEventListener("input", function (e) {
+            var inp = e.target;
+            if (inp.tagName !== "INPUT") return;
+            var i = +inp.dataset.i, v = +inp.value;
+            if (inp.dataset.type === "cur") { current[i] = v; document.getElementById("cur-" + i).textContent = v; }
+            else { goal[i] = v; document.getElementById("goal-" + i).textContent = v; }
+            render();
+          });
+        }
+
+        document.getElementById("reset").addEventListener("click", function () {
+          current = defCur.slice(); goal = defGoal.slice();
+          document.querySelectorAll("#controls input").forEach(function (inp) {
+            var i = +inp.dataset.i;
+            if (inp.dataset.type === "cur") { inp.value = current[i]; document.getElementById("cur-" + i).textContent = current[i]; }
+            else { inp.value = goal[i]; document.getElementById("goal-" + i).textContent = goal[i]; }
+          });
+          render();
+        });
+
+        buildGrid();
+        buildControls();
+        render();
+      })();
+    </script>
+  </body>
+</html>
